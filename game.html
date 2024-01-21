@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+            color: #171515;
+            background-color: #ffd7fc;
+        }
+
+        #board {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-gap: 5px;
+        }
+        h1{
+            color:rgb(0, 153, 153)
+        }
+
+        .cell {
+            width: 100px;
+            height: 100px;
+            font-size: 2em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #69c7fd;
+            cursor: pointer;
+        }
+
+        .cell:hover {
+            background-color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <h1>Tic Tac Toe</h1>
+    <div id="board"></div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const board = document.getElementById("board");
+            const cells = [];
+
+            // Create the Tic Tac Toe board
+            for (let i = 0; i < 3; i++) {
+                for (let j = 0; j < 3; j++) {
+                    const cell = document.createElement("div");
+                    cell.classList.add("cell");
+                    cell.dataset.row = i;
+                    cell.dataset.col = j;
+                    board.appendChild(cell);
+                    cells.push(cell);
+                }
+            }
+
+            let currentPlayer = "X";
+            let gameOver = false;
+
+            // Event listener for each cell
+            cells.forEach(cell => {
+                cell.addEventListener("click", () => {
+                    if (!gameOver && !cell.textContent) {
+                        cell.textContent = currentPlayer;
+                        if (checkWinner()) {
+                            alert(`${currentPlayer} wins!`);
+                            gameOver = true;
+                        } else if (isBoardFull()) {
+                            alert("It's a tie!");
+                            gameOver = true;
+                        } else {
+                            currentPlayer = currentPlayer === "X" ? "O" : "X";
+                        }
+                    }
+                });
+            });
+
+            // Function to check for a winner
+            function checkWinner() {
+                const winningCombinations = [
+                    [[0, 0], [0, 1], [0, 2]],
+                    [[1, 0], [1, 1], [1, 2]],
+                    [[2, 0], [2, 1], [2, 2]],
+                    [[0, 0], [1, 0], [2, 0]],
+                    [[0, 1], [1, 1], [2, 1]],
+                    [[0, 2], [1, 2], [2, 2]],
+                    [[0, 0], [1, 1], [2, 2]],
+                    [[0, 2], [1, 1], [2, 0]],
+                ];
+
+                for (const combination of winningCombinations) {
+                    const [a, b, c] = combination;
+                    if (
+                        cells[a[0] * 3 + a[1]].textContent &&
+                        cells[a[0] * 3 + a[1]].textContent === cells[b[0] * 3 + b[1]].textContent &&
+                        cells[a[0] * 3 + a[1]].textContent === cells[c[0] * 3 + c[1]].textContent
+                    ) {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            // Function to check if the board is full
+            function isBoardFull() {
+                return cells.every(cell => cell.textContent);
+            }
+        });
+    </script>
+</body>
+</html>
